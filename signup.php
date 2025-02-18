@@ -1,11 +1,14 @@
 <?php
 session_start();
-include 'dbConnect.php'; // Your database connection
+include 'dbConnect.php'; // Database connection
 
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+
+// Include PHPMailer autoloader
+require 'vendor/autoload.php';
 
 // Include User class
 include_once 'User.php';
@@ -19,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $confirm_password = $_POST['confirm_password'];
     $user_role = $_POST['user_role'];
 
+    // Validation checks
     if (empty($username) || empty($email) || empty($password) || empty($confirm_password) || empty($user_role)) {
         $error_message = "All fields are required.";
     } elseif ($password !== $confirm_password) {
@@ -32,25 +36,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_param('ss', $email, $username);
             $stmt->execute();
             $existing_user = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
 
             if ($existing_user) {
                 $error_message = "Email or Username is already registered.";
             } else {
+                // Hash password
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-                $user = new User(0, $username, $email, $hashed_password, $user_role); // Create user object
+                $user = new User(0, $username, $email, $hashed_password, $user_role);
 
-                if ($user->register($conn)) { // Pass $conn to register method
+                if ($user->register($conn)) {
                     $otp = rand(100000, 999999);
                     $user->saveOtp($conn, $otp);
 
-                    // Send OTP via email (using PHPMailer)
+                    // Send OTP via email
                     $mail = new PHPMailer(true);
                     try {
                         $mail->isSMTP();
                         $mail->Host = 'smtp.gmail.com';
                         $mail->SMTPAuth = true;
                         $mail->Username = 'leojoegem@gmail.com'; // Your Gmail email
-                        $mail->Password = 'adsv bzob lynp pitx'; // Your Gmail app password
+                        $mail->Password = 'bydk jari tiah qbyx'; // Your Gmail app password
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
@@ -59,15 +65,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                         $mail->isHTML(true);
                         $mail->Subject = 'Your OTP for CampusClubs Registration';
-                        $mail->Body = "Your OTP code is: <b>$otp</b>";
+                        $mail->Body = "<p>Your OTP code is: <b>$otp</b></p>";
 
-                        $mail->send();
-
-                        $_SESSION['email'] = $email; // Store email in session
-                        header('Location: otp_verification.php');
-                        exit;
+                        if ($mail->send()) {
+                            $_SESSION['email'] = $email; // Store email in session
+                            header('Location: otp_verification.php');
+                            exit(); // Ensure redirection
+                        } else {
+                            $error_message = "Failed to send OTP email. Please try again.";
+                        }
                     } catch (Exception $e) {
-                        $error_message = "Failed to send OTP email. Please try again later. Mailer Error: {$mail->ErrorInfo}";
+                        $error_message = "Mailer Error: " . $mail->ErrorInfo;
                     }
                 } else {
                     $error_message = "Registration failed. Please try again.";
@@ -79,10 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
-
-<!doctype html>
-<html lang="en">
 
 <!doctype html>
 <html lang="en">
@@ -106,8 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-family: 'Inter', sans-serif;
             background-color: #f0f0f5;
         }
-
-      .signup-container {
+        .signup-container {
             max-width: 420px;
             margin: 50px auto;
             padding: 30px;
@@ -115,26 +118,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
-      .signup-container h2 {
+        .signup-container h2 {
             text-align: center;
             margin-bottom: 20px;
             font-weight: 700;
             color: #333;
         }
-
-      .form-group {
+        .form-group {
             margin-bottom: 20px;
         }
-
-      .form-control {
+        .form-control {
             border-radius: 5px;
             padding: 12px;
             font-size: 14px;
             border: 1px solid #ddd;
         }
-
-      .btn-custom {
+        .btn-custom {
             width: 100%;
             padding: 12px;
             background-color: #0069d9;
@@ -146,28 +145,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
-      .btn-custom:hover {
+        .btn-custom:hover {
             background-color: #0056b3;
         }
-
-      .footer {
+        .footer {
             text-align: center;
             margin-top: 30px;
             font-size: 14px;
         }
-
-      .footer a {
+        .footer a {
             text-decoration: none;
             color: #0069d9;
             font-weight: 500;
         }
-
-      .footer a:hover {
+        .footer a:hover {
             color: #0056b3;
         }
-
-      .error-message {
+        .error-message {
             color: red;
             text-align: center;
             font-weight: bold;
