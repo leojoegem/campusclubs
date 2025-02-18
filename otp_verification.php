@@ -4,7 +4,7 @@ include 'dbConnect.php';
 
 // Check if the user has an email session (registered but unverified)
 if (!isset($_SESSION['email'])) {
-    header("Location: signup.php");
+    header("Location: login.php");
     exit();
 }
 
