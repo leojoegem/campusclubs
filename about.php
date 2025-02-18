@@ -1,19 +1,29 @@
+<?php
+// Include your database connection (dbConnect.php)
+include 'dbConnect.php';
+
+// Fetch admins and their clubs from the database (for contact form)
+$admins = [];
+$stmt = $conn->prepare("SELECT u.id, u.username, c.club_name FROM users u JOIN clubs c ON u.id = c.admin_id WHERE u.role = 'admin'");
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    $admins[] = $row;
+}
+
+// ... (rest of your contact form processing code)
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About CampusClubs</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        .container {
+    <link rel="stylesheet" href="styles.css">  <style>
+        /* about.php specific styles (if any) - these will override styles.css */
+        .about-content {  /* Container for the main about page content */
             max-width: 960px;
             margin: 20px auto;
             padding: 20px;
@@ -22,22 +32,21 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
+        .about-content h1 {
             text-align: center;
-            color: #007bff;
+            color: #007bff; /* Example: Blue heading */
             margin-bottom: 20px;
         }
 
-        h2 {
-            color: #007bff;
+        .about-content h2 {
+            color: #007bff; /* Example: Blue subheading */
             margin-bottom: 10px;
         }
 
-        p {
+        .about-content p {
             line-height: 1.6;
             margin-bottom: 20px;
         }
-
         .image-container {
             display: flex;
             flex-wrap: wrap;
@@ -59,20 +68,37 @@
         .copyright {
             text-align: center;
         }
+
+
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <header>  <nav>
+            <div class="logo">CampusClubs</div>
+            <ul>
+                <li><a href="index.php">Home</a></li>  <li><a href="about.php">About</a></li>
+                <li><a href="clubs.php">Clubs</a></li>
+                <li><a href="events.php">Events</a></li>
+                <li><a href="contact.php">Contact</a></li>
+                <?php
+                if (isset($_SESSION['user_id'])) {
+                    echo '<li><a href="dashboard.php">Dashboard</a></li>';
+                    echo '<li><a href="logout.php">Logout</a></li>';
+                } else {
+                    echo '<li><a href="login.php">Login</a></li>';
+                    echo '<li><a href="register.php">Register</a></li>';
+                }
+                ?>
+            </ul>
+        </nav>
+    </header>
 
-        <h1>About CampusClubs</h1>
+    <div class="about-content">  <h1>About CampusClubs</h1>
 
-        <p>
-            At CampusClubs, we're passionate about the incredible power of clubs within university life.  We believe that clubs are more than just gatherings of people with shared interests – they're vibrant communities where students discover their passions, develop essential skills, and build lifelong connections.
-        </p>
+        <p>At CampusClubs, we're passionate about the incredible power of clubs within university life. We believe that clubs are more than just gatherings of people with shared interests – they're vibrant communities where students discover their passions, develop essential skills, and build lifelong connections.</p>
 
         <h2>The Importance of Clubs</h2>
-
         <div class="image-container">
             <div class="image-wrapper">
                 <img src="images/club1.jpg" alt="Club Activity">
@@ -100,18 +126,17 @@
             </div>
         </div>
 
+        <p>CampusClubs is here to make it easier than ever for students to find and engage with the clubs that matter to them. We provide a centralized platform where you can discover clubs, connect with members, and stay up-to-date on club activities.</p>
 
-        <p>
-            CampusClubs is here to make it easier than ever for students to find and engage with the clubs that matter to them.  We provide a centralized platform where you can discover clubs, connect with members, and stay up-to-date on club activities.
-        </p>
-
-        <p>
-            Join us in celebrating the vibrant club culture within universities and empowering students to make the most of their university experience!
-        </p>
+        <p>Join us in celebrating the vibrant club culture within universities and empowering students to make the most of their university experience!</p>
 
         <p class="copyright">&copy; <?php echo date("Y"); ?> CampusClubs</p>
-
     </div>
+
+
+    <footer>
+        <p>&copy; 2023 CampusClubs</p>
+    </footer>
 
 </body>
 </html>
