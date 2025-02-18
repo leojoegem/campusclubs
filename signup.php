@@ -13,8 +13,8 @@ include_once 'User.php';
 $error_message = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
+    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $user_role = $_POST['user_role'];
@@ -36,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($existing_user) {
                 $error_message = "Email or Username is already registered.";
             } else {
-                $user = new User(0, $username, $email, $password, $user_role); // Create user object
+                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+                $user = new User(0, $username, $email, $hashed_password, $user_role); // Create user object
 
                 if ($user->register($conn)) { // Pass $conn to register method
                     $otp = rand(100000, 999999);
@@ -45,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Send OTP via email (using PHPMailer)
                     $mail = new PHPMailer(true);
                     try {
-                        // $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Uncomment for debugging
                         $mail->isSMTP();
                         $mail->Host = 'smtp.gmail.com';
                         $mail->SMTPAuth = true;
@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+
 
 <!doctype html>
 <html lang="en">
