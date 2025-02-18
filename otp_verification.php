@@ -1,73 +1,84 @@
 <?php
-session_start(); 
+session_start();
 include 'dbConnect.php';
 
-$error_message = "";
+// Check if the user is redirected from the registration process
+if (!isset($_SESSION['temp_user'])) {
+    header("Location: login.php");
+    exit();
+}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $enteredOtp = $_POST['otp'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $user_otp = $_POST['otp'];
+    $stored_otp = $_SESSION['temp_user']['otp'];
+    $user_id = $_SESSION['temp_user']['id'];
 
-    // Retrieve the user's email from the session
-    $email = $_SESSION['email'];
-
-    // Fetch user data based on email
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email =?");
-    $stmt->bind_param("s", $email);
+    // Use prepared statements to prevent SQL injection
+    $stmt = $conn->prepare("SELECT * FROM users WHERE id=?");
+    $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
+    $data = $result->fetch_assoc();
 
-    if ($user) {
-        $storedOtp = $user['otp'];
-        $otpGeneratedAt = strtotime($user['otp_generated_at']); // Convert to Unix timestamp
-        $currentTime = time();
-        $otpExpiryTime = 5 * 60; // 5 minutes in seconds
-
-        // Check if OTP is correct and not expired
-        if ($enteredOtp == $storedOtp && ($currentTime - $otpGeneratedAt) <= $otpExpiryTime) {
-            // Mark user as verified (assuming you have a 'verified' column)
-            $stmt = $conn->prepare("UPDATE users SET verified = 1 WHERE email =?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-
-            // Clear OTP and redirect to login page
-            $stmt = $conn->prepare("UPDATE users SET otp = NULL, otp_generated_at = NULL WHERE email =?");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-
-            $_SESSION['success_message'] = "Email verified successfully! You can now log in.";
-            header("Location: index.php");
-            exit;
+    if ($data) {
+        $otp_expiry = strtotime($data['otp_expiry']);
+        if ($otp_expiry >= time() && $user_otp == $stored_otp) {
+            // OTP is valid and not expired
+            $_SESSION['user_id'] = $data['id'];
+            unset($_SESSION['temp_user']);
+            header("Location: login.php");
+            exit();
         } else {
-            $error_message = "Invalid or expired OTP. Please try again.";
+            echo "<script>alert('OTP has expired or is invalid. Please try again.');</script>";
         }
     } else {
-        $error_message = "User not found.";
+        echo "<script>alert('Invalid OTP. Please try again.');</script>";
     }
-}?>
+}
+?>
 
 <!DOCTYPE html>
 <html>
 <head>
-  <title>OTP Verification</title>
-  <style>
-    /*... add your CSS styles here... */
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OTP Verification</title>
+    <style type="text/css">
+        #container {
+            border: 1px solid black;
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input[type=number] {
+            width: 290px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            background-color: orange;
+            border: 1px solid orange;
+            width: 100px;
+            padding: 9px;
+            margin-top: 10px;
+        }
+        button:hover {
+            cursor: pointer;
+            opacity: .9;
+        }
+    </style>
 </head>
 <body>
-
-  <h2>OTP Verification</h2>
-
-  <?php if (isset($error_message)):?>
-    <div class="error-message"><?php echo $error_message;?></div>
-  <?php endif;?>
-
-  <form method="POST" action="">
-    <label for="otp">Enter OTP:</label>
-    <input type="text" id="otp" name="otp" required><br><br>
-
-    <button type="submit">Verify</button>
-  </form>
-
+    <div id="container">
+        <h1>Two-Step Verification</h1>
+        <p>Enter the 6 Digit OTP Code that has been sent <br> to your email address: <?php echo htmlspecialchars($_SESSION['email']); ?></p>
+        <form method="post" action="otp_verification.php">
+            <label style="font-weight: bold; font-size: 18px;" for="otp">Enter OTP Code:</label><br>
+            <input type="number" name="otp" pattern="\d{6}" placeholder="Six-Digit OTP" required><br><br>
+            <button type="submit">Verify OTP</button>
+        </form>
+        <p><a href="resend_otp.php">Resend OTP</a></p> <!-- Link to resend OTP -->
+    </div>
 </body>
 </html>
