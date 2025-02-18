@@ -1,20 +1,3 @@
-<?php
-// Include your database connection (dbConnect.php)
-include 'dbConnect.php';
-
-// Fetch admins and their clubs from the database (for contact form)
-$admins = [];
-$stmt = $conn->prepare("SELECT u.id, u.username, c.club_name FROM users u JOIN clubs c ON u.id = c.admin_id WHERE u.role = 'admin'");
-$stmt->execute();
-$result = $stmt->get_result();
-
-while ($row = $result->fetch_assoc()) {
-    $admins[] = $row;
-}
-
-// ... (rest of your contact form processing code)
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
