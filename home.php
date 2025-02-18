@@ -5,6 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusClubs</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* styles.css */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light background */
+    color: #333; /* Dark text for contrast */
+}
+
+header {
+    background-color: #333; /* Darker header background */
+    color: white;
+    padding: 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between; /* Align logo and links */
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav li {
+    margin-left: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px; /* Add some padding around links */
+    border-radius: 5px; /* Slightly rounded corners */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly transparent white on hover */
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 0;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: orange;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: darkorange;
+}
+
+.section {
+    padding: 40px;
+    text-align: center; /* Center content within sections */
+}
+
+
+.club-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 20px;
+}
+
+.club-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Subtle shadow */
+    background-color: white;
+    text-align: left; /* Align text within card to the left */
+    transition: transform 0.2s; /* Add a transition for the transform property */
+}
+
+.club-card:hover {
+    transform: translateY(-5px); /* Move the card up slightly on hover */
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.15); /* Increase shadow on hover */
+}
+
+.club-card h3 {
+    margin-bottom: 10px;
+}
+
+.club-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff; /* Blue button */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.club-link:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Responsive adjustments (example) */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column; /* Stack links vertically on smaller screens */
+        text-align: center; /* Center text in links */
+    }
+
+    nav li {
+        margin: 10px 0; /* Add top/bottom margins to stacked links */
+        margin-left: 0; /* Remove left margin from stacked links */
+    }
+
+    .club-grid {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
+}
+    </style>
 </head>
 <body>
     <header>

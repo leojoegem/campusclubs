@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['logged_in'] = true;
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $role;
-                header('Location: index.php'); // Redirect to dashboard
+                header('Location: home.php'); // Redirect to dashboard
                 exit;
             } else {
                 $error_message = "Invalid role. Please select the correct role.";
