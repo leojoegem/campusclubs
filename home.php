@@ -38,22 +38,9 @@ $clubs = $club->getClubs();
                 <li><a href="my_clubs.php">My Clubs</a></li>
                 <li><a href="announcements.php">Announcements</a></li>
                 <li>
-                    <?php
-                    if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
-                        echo '<a href="admin_dashboard.php">Profile</a>';
-                    } else {
-                        echo '<a href="profile.php">Profile</a>';
-                    }
-                    ?>
-                </li>
-                <li>
-                    <?php
-                    if (isset($_SESSION['user_id'])) {
-                        echo '<a href="logout.php">Logout</a>';
-                    } else {
-                        echo '<a href="login.php">Login</a>';
-                    }
-                    ?>
+                    <a id="profileLink" href="#" data-student="profile.php" data-admin="dashboard.php">
+                        Profile
+                    </a>
                 </li>
             </ul>
         </nav>
@@ -83,5 +70,22 @@ $clubs = $club->getClubs();
     <footer>
         <p>&copy; 2025 CampusClubs</p>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+    var profileLink = document.getElementById("profileLink");
+    var userRole = "<?= isset($_SESSION['user_role']) ? $_SESSION['user_role'] : ''; ?>";
+
+    console.log("User Role:", userRole); // Debugging: Check user role
+    if (userRole === "admin") {
+        profileLink.href = "dashboard.php";
+    } else if (userRole === "student") {
+        profileLink.href = "profile.php";
+    } else {
+        console.log("Invalid role, profile link not set.");
+    }
+    });
+    </script>
+
 </body>
 </html>
