@@ -2,6 +2,17 @@
 session_start();
 include 'dbConnect.php'; // Database connection
 
+// Check if user is logged in and redirect accordingly
+if (isset($_SESSION['user_role'])) {
+    if ($_SESSION['user_role'] === "admin") {
+        header("Location: dashboard.php");
+        exit();
+    } elseif ($_SESSION['user_role'] === "student") {
+        header("Location: profile.php");
+        exit();
+    }
+}
+
 // Club class using OOP
 class Club {
     private $conn;
@@ -38,9 +49,11 @@ $clubs = $club->getClubs();
                 <li><a href="my_clubs.php">My Clubs</a></li>
                 <li><a href="announcements.php">Announcements</a></li>
                 <li>
-                    <a id="profileLink" href="#" data-student="profile.php" data-admin="dashboard.php">
-                        Profile
-                    </a>
+                    <?php if (isset($_SESSION['user_role'])): ?>
+                        <a id="profileLink" href="<?= $_SESSION['user_role'] === 'admin' ? 'dashboard.php' : 'profile.php'; ?>">Profile</a>
+                    <?php else: ?>
+                        <a id="profileLink" href="#">Profile</a>
+                    <?php endif; ?>
                 </li>
             </ul>
         </nav>
@@ -70,22 +83,5 @@ $clubs = $club->getClubs();
     <footer>
         <p>&copy; 2025 CampusClubs</p>
     </footer>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-    var profileLink = document.getElementById("profileLink");
-    var userRole = "<?= isset($_SESSION['user_role']) ? $_SESSION['user_role'] : ''; ?>";
-
-    console.log("User Role:", userRole); // Debugging: Check user role
-    if (userRole === "admin") {
-        profileLink.href = "dashboard.php";
-    } else if (userRole === "student") {
-        profileLink.href = "profile.php";
-    } else {
-        console.log("Invalid role, profile link not set.");
-    }
-    });
-    </script>
-
 </body>
 </html>
