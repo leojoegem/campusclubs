@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About CampusClubs</title>
     <link rel="stylesheet" href="styles.css">  <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            }
+            .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            }
+            .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            }
+            .navbar .nav-links li {
+            display: inline;
+            }
+            .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            }
+            .navbar .nav-links a:hover {
+            color: #ff6347;
+            }
         /* about.php specific styles (if any) - these will override styles.css */
         .about-content {  /* Container for the main about page content */
             max-width: 960px;
@@ -57,22 +86,14 @@
 </head>
 <body>
 
-    <header>  <nav>
+<header>
+        <nav class="navbar">
             <div class="logo">CampusClubs</div>
-            <ul>
-                <li><a href="index.php">Home</a></li>  <li><a href="about.php">About</a></li>
+            <ul class="nav-links"></ul>
+                <li><a href="home.php">Home</a></li>
                 <li><a href="clubs.php">Clubs</a></li>
-                <li><a href="events.php">Events</a></li>
-                <li><a href="contact.php">Contact</a></li>
-                <?php
-                if (isset($_SESSION['user_id'])) {
-                    echo '<li><a href="dashboard.php">Dashboard</a></li>';
-                    echo '<li><a href="logout.php">Logout</a></li>';
-                } else {
-                    echo '<li><a href="login.php">Login</a></li>';
-                    echo '<li><a href="register.php">Register</a></li>';
-                }
-                ?>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Logout</a></li>
             </ul>
         </nav>
     </header>

@@ -14,6 +14,35 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
     <title>CampusClubs - Clubs</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            }
+            .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            }
+            .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            }
+            .navbar .nav-links li {
+            display: inline;
+            }
+            .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            }
+            .navbar .nav-links a:hover {
+            color: #ff6347;
+            }
         /* Minimalistic and user-friendly styles */
         body {
             font-family: 'Arial', sans-serif;
@@ -163,22 +192,13 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
 </head>
 <body>
     <header>
-        <nav>
+        <nav class="navbar">
             <div class="logo">CampusClubs</div>
-            <ul>
+            <ul class="nav-links"></ul>
                 <li><a href="home.php">Home</a></li>
                 <li><a href="clubs.php">Clubs</a></li>
-                <li><a href="#">Events</a></li>
-                <li><a href="#">Contact</a></li>
-                <?php
-                if (isset($_SESSION['user_id'])) {
-                    echo '<li><a href="dashboard.php">Dashboard</a></li>';
-                    echo '<li><a href="logout.php">Logout</a></li>';
-                } else {
-                    echo '<li><a href="login.php">Login</a></li>';
-                    echo '<li><a href="register.php">Register</a></li>';
-                }
-                ?>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Logout</a></li>
             </ul>
         </nav>
     </header>
