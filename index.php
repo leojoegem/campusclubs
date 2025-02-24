@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             font-family: 'Inter', sans-serif;
             background-color: #f0f0f5;
         }
+
         .login-container {
             max-width: 420px;
             margin: 50px auto;
@@ -75,6 +76,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        .btn-custom {
+            width: 100%;
+            padding: 12px;
+            background-color: #0069d9;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #0069d9;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            color: #0056b3;
+        }
+
         .error-message {
             color: red;
             text-align: center;
