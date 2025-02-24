@@ -21,6 +21,9 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
             color: #333;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure the body takes at least the full viewport height */
         }
 
         header {
@@ -34,6 +37,8 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         header .logo {
@@ -62,6 +67,7 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
+            flex: 1; /* Allow the section to grow and push the footer to the bottom */
         }
 
         .search-container {
@@ -127,6 +133,7 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
         .club-card .description {
             margin: 10px 0;
             color: #666;
+            line-height: 1.6;
         }
 
         .club-card .join-button {
@@ -150,7 +157,7 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
             padding: 20px;
             background-color: #007bff;
             color: white;
-            margin-top: 40px;
+            margin-top: auto; /* Push the footer to the bottom */
         }
     </style>
 </head>

@@ -46,7 +46,7 @@ $clubs = $club->getClubs();
             <div class="logo">CampusClubs</div>
             <ul>
                 <li><a href="home.php">Home</a></li>
-                <li><a href="my_clubs.php">My Clubs</a></li>
+                <li><a href="clubs.php">My Clubs</a></li>
                 <li><a href="announcements.php">Announcements</a></li>
                 <li>
                     <?php if (isset($_SESSION['user_role'])): ?>
