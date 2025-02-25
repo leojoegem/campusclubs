@@ -279,16 +279,16 @@ $clubs = $club->getClubs();
         <h2>Photo Gallery</h2>
         <div class="gallery-container">
             <div class="gallery-item">
-                <img src="gallery1.jpg" alt="Gallery Image 1">
+                <img src="images/diversity2.jpg" alt="Gallery Image 1">
             </div>
             <div class="gallery-item">
-                <img src="gallery2.jpg" alt="Gallery Image 2">
+                <img src="images/diversity3.JPG" alt="Gallery Image 2">
             </div>
             <div class="gallery-item">
-                <img src="gallery3.jpg" alt="Gallery Image 3">
+                <img src="images/diversity4.png" alt="Gallery Image 3">
             </div>
             <div class="gallery-item">
-                <img src="gallery4.jpg" alt="Gallery Image 4">
+                <img src="images/diversity2.jpg" alt="Gallery Image 4">
             </div>
         </div>
     </section>
