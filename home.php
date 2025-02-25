@@ -301,9 +301,16 @@ $clubs = $club->getClubs();
         <div class="arrow" onclick="window.location.href='alumni.php'">&#8594;</div>
     </section>
 
-    <footer>
-        <p>&copy; 2025 CampusClubs</p>
-    </footer>
+    <footer style="position: relative; text-align: center; padding: 20px; background-color: #007bff; color: white; margin-top: 40px;">
+    <p style="margin: 0;">&copy; 2023 CampusClubs</p>
+    <a href="dashboard.php" 
+       style="color: white; text-decoration: none; font-size: 1.2em; 
+              font-weight: bold; position: absolute; bottom: 10px; right: 20px; 
+              opacity: 0.6; transition: opacity 0.3s ease, transform 0.2s ease;">
+        D
+    </a>
+</footer>
+
 
     <script>
         // Hero Section Carousel

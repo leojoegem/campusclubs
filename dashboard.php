@@ -24,6 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle Image Upload
     if (!empty($_FILES['image']['name'])) {
         $target_dir = "uploads/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0755, true); // Create the uploads directory if it doesn't exist
+        }
         $target_file = $target_dir . basename($_FILES["image"]["name"]);
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -31,8 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $check = getimagesize($_FILES["image"]["tmp_name"]);
         if ($check !== false && $_FILES["image"]["size"] <= 500000 && in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                $image = $target_file;
+                $image = $target_file; // Save the file path to the database
+            } else {
+                echo "<script>alert('Error uploading image.');</script>";
             }
+        } else {
+            echo "<script>alert('Invalid image file. Only JPG, JPEG, PNG, and GIF files up to 500KB are allowed.');</script>";
         }
     }
 

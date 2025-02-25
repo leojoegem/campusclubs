@@ -14,6 +14,10 @@ $club_id = intval($_GET['club_id']);
 $club_sql = "SELECT * FROM clubs WHERE id = $club_id";
 $club_result = $conn->query($club_sql);
 
+if (!$club_result) {
+    die("Database query failed: " . $conn->error); // Debugging: Check if the query fails
+}
+
 if ($club_result->num_rows == 0) {
     echo "Club not found.";
     exit();
@@ -27,6 +31,10 @@ $members_sql = "SELECT users.username
                 JOIN users ON club_members.user_id = users.id 
                 WHERE club_members.club_id = $club_id";
 $members_result = $conn->query($members_sql);
+
+if (!$members_result) {
+    die("Database query failed: " . $conn->error); // Debugging: Check if the query fails
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +42,7 @@ $members_result = $conn->query($members_sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $club['name']; ?> - CampusClubs</title>
+    <title><?php echo htmlspecialchars($club['name']); ?> - CampusClubs</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Minimalistic and user-friendly styles */
@@ -166,21 +174,21 @@ $members_result = $conn->query($members_sql);
 
     <div class="club-details">
         <?php if (!empty($club['image'])): ?>
-            <img src="<?php echo $club['image']; ?>" alt="<?php echo $club['name']; ?>">
+            <img src="<?php echo htmlspecialchars($club['image']); ?>" alt="<?php echo htmlspecialchars($club['name']); ?>">
         <?php endif; ?>
-        <h1><?php echo $club['name']; ?></h1>
-        <p class="description"><?php echo $club['description']; ?></p>
-        <p><b>Category:</b> <?php echo $club['category']; ?></p>
-        <p><b>Contact:</b> <?php echo $club['contact_info']; ?></p>
-        <p><b>Meeting Schedule:</b> <?php echo $club['meeting_schedule']; ?></p>
-        <p><b>Location:</b> <?php echo $club['location']; ?></p>
+        <h1><?php echo htmlspecialchars($club['name']); ?></h1>
+        <p class="description"><?php echo htmlspecialchars($club['description']); ?></p>
+        <p><b>Category:</b> <?php echo htmlspecialchars($club['category']); ?></p>
+        <p><b>Contact:</b> <?php echo htmlspecialchars($club['contact_info']); ?></p>
+        <p><b>Meeting Schedule:</b> <?php echo htmlspecialchars($club['meeting_schedule']); ?></p>
+        <p><b>Location:</b> <?php echo htmlspecialchars($club['location']); ?></p>
 
         <div class="members-list">
             <h2>Members</h2>
             <?php if ($members_result->num_rows > 0): ?>
                 <ul>
                     <?php while ($member = $members_result->fetch_assoc()): ?>
-                        <li><?php echo $member['username']; ?></li>
+                        <li><?php echo htmlspecialchars($member['username']); ?></li>
                     <?php endwhile; ?>
                 </ul>
             <?php else: ?>

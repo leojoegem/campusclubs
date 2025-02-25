@@ -133,6 +133,7 @@ $clubs = $club->getClubs($search_term);
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
         .club-card:hover {
             transform: translateY(-5px);
@@ -219,7 +220,7 @@ $clubs = $club->getClubs($search_term);
         <?php
         if ($clubs->num_rows > 0) {
             while ($row = $clubs->fetch_assoc()) {
-                echo '<div class="club-card">';
+                echo '<div class="club-card" onclick="window.location.href=\'club_details.php?club_id=' . $row['id'] . '\'">';
                 if (!empty($row['image'])) {
                     echo '<img src="' . $row['image'] . '" alt="' . $row['name'] . '">';
                 }
