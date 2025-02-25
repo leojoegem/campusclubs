@@ -14,6 +14,7 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
     <title>CampusClubs - Clubs</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Uniform Navigation Bar Styles */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -21,28 +22,31 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
             padding: 10px 20px;
             background-color: #333;
             color: white;
-            }
-            .navbar .logo {
+        }
+        .navbar .logo {
             font-size: 24px;
             font-weight: bold;
-            }
-            .navbar .nav-links {
+        }
+        .navbar .nav-links {
             list-style: none;
             display: flex;
             gap: 20px;
-            }
-            .navbar .nav-links li {
+            margin: 0;
+            padding: 0;
+        }
+        .navbar .nav-links li {
             display: inline;
-            }
-            .navbar .nav-links a {
+        }
+        .navbar .nav-links a {
             color: white;
             text-decoration: none;
             font-size: 18px;
             transition: color 0.3s ease;
-            }
-            .navbar .nav-links a:hover {
+        }
+        .navbar .nav-links a:hover {
             color: #ff6347;
-            }
+        }
+
         /* Minimalistic and user-friendly styles */
         body {
             font-family: 'Arial', sans-serif;
@@ -60,36 +64,6 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
             color: white;
             padding: 15px 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        header ul {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
-
-        header ul li {
-            margin: 0 10px;
-        }
-
-        header ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
         }
 
         .section {
@@ -194,10 +168,10 @@ $search_term = isset($_GET['search']) ? $_GET['search'] : '';
     <header>
         <nav class="navbar">
             <div class="logo">CampusClubs</div>
-            <ul class="nav-links"></ul>
+            <ul class="nav-links">
                 <li><a href="home.php">Home</a></li>
                 <li><a href="clubs.php">Clubs</a></li>
-                <li><a href="#">About</a></li>
+                <li><a href="about.php">About</a></li>
                 <li><a href="#">Logout</a></li>
             </ul>
         </nav>
