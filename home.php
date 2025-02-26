@@ -206,6 +206,7 @@ $clubs = $club->getClubs();
             background-color: #333;
             color: white;
             margin-top: 40px;
+            position: relative;
         }
         footer p {
             margin: 0;
@@ -304,11 +305,15 @@ $clubs = $club->getClubs();
     </section>
 
     <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 CampusClubs</p>
-        </div>
-    </footer>
+    <footer style="position: relative; text-align: center; padding: 20px; background-color: #007bff; color: white; margin-top: 40px;">
+    <p style="margin: 0;">&copy; 2023 CampusClubs</p>
+    <a href="dashboard.php" 
+       style="color: white; text-decoration: none; font-size: 1.2em; 
+              font-weight: bold; position: absolute; bottom: 10px; right: 20px; 
+              opacity: 0.6; transition: opacity 0.3s ease, transform 0.2s ease;">
+        D
+    </a>
+</footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

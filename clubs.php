@@ -1,13 +1,17 @@
 <?php
 session_start();
-if (isset($_SESSION['message'])) {
-    echo "<script>alert('" . addslashes($_SESSION['message']) . "');</script>";
-    unset($_SESSION['message']); // Clear the message after displaying
-}
-include 'dbConnect.php'; // Include your database connection
+include 'dbConnect.php'; // Database connection
 
-// Optional: Add a search/filter feature
-$search_term = isset($_GET['search']) ? $_GET['search'] : '';
+// Check if user is logged in and redirect accordingly
+if (isset($_SESSION['user_role'])) {
+    if ($_SESSION['user_role'] === "admin") {
+        header("Location: dashboard.php");
+        exit();
+    } elseif ($_SESSION['user_role'] === "student") {
+        header("Location: profile.php");
+        exit();
+    }
+}
 
 // Club class using OOP
 class Club {
@@ -30,18 +34,10 @@ class Club {
         $stmt->execute();
         return $stmt->get_result();
     }
-
-    public function getClubById($club_id) {
-        $sql = "SELECT * FROM clubs WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $club_id);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
-    }
 }
 
 $club = new Club($conn);
-$clubs = $club->getClubs($search_term);
+$clubs = $club->getClubs();
 ?>
 
 <!DOCTYPE html>
@@ -53,29 +49,20 @@ $clubs = $club->getClubs($search_term);
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Copperplate&family=Copperplate+Gothic+Light&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
         /* Global Styles */
         body {
-            font-family: 'Copperplate Gothic Light', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f9f9f9;
             color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            line-height: 1.6;
         }
 
-        /* Navigation Bar */
+        /* Navigation Bar (Unchanged) */
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
             background-color: #333;
-            color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .navbar .logo {
@@ -124,7 +111,7 @@ $clubs = $club->getClubs($search_term);
             border-radius: 5px;
             width: 400px;
             max-width: 100%;
-            font-family: 'Copperplate Gothic Light', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 16px;
         }
         .search-container button {
@@ -134,7 +121,7 @@ $clubs = $club->getClubs($search_term);
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-family: 'Copperplate Gothic Light', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -189,7 +176,7 @@ $clubs = $club->getClubs($search_term);
             cursor: pointer;
             text-decoration: none;
             margin-top: 10px;
-            font-family: 'Copperplate Gothic Light', sans-serif;
+            font-family: 'Roboto', sans-serif;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -213,19 +200,35 @@ $clubs = $club->getClubs($search_term);
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <div class="logo">CampusClubs</div>
-            <ul class="nav-links">
-                <li><a href="home.php">Home</a></li>
-                <li><a href="clubs.php">Clubs</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand logo" href="#">CampusClubs</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto nav-links">
+                        <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="clubs.php">Clubs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
         </nav>
     </header>
 
     <section id="clubs" class="section">
         <h2>Explore Clubs</h2>
+
+        <!-- Display Session Messages -->
+        <?php if (isset($_SESSION['message'])): ?>
+            <div class="alert alert-<?php echo (strpos($_SESSION['message'], 'successfully') !== false ? 'success' : 'danger'); ?> alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['message']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['message']); // Clear the message after displaying ?>
+        <?php endif; ?>
 
         <!-- Search Bar -->
         <div class="search-container">
