@@ -85,6 +85,8 @@ if (isset($_GET['delete_club'])) {
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -122,8 +124,8 @@ if (isset($_GET['delete_club'])) {
             font-weight: 500;
         }
         .dashboard-container {
-            max-width: 900px;
-            margin: 50px auto;
+            max-width: 1200px;
+            margin: 20px auto;
             padding: 20px;
             background: white;
             border-radius: 8px;
@@ -196,6 +198,11 @@ if (isset($_GET['delete_club'])) {
             cursor: pointer;
             font-size: 1.5rem;
         }
+        .chart-container {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 800px;
+        }
     </style>
 </head>
 <body>
@@ -204,7 +211,9 @@ if (isset($_GET['delete_club'])) {
         <nav>
             <ul>
                 <li><a href="home.php">Home</a></li>
-                <li><a href="dashboard.php">Dashboard</a></li>
+                <li><a href="#clubs">Clubs</a></li>
+                <li><a href="#memberships">Memberships</a></li>
+                <li><a href="#charts">Charts</a></li>
                 <li><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
@@ -212,47 +221,94 @@ if (isset($_GET['delete_club'])) {
 
     <main class="dashboard-container">
         <h1>Admin Dashboard</h1>
-        <button onclick="openModal()">+ Add New Club</button>
-        <h2>Existing Clubs</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Club Name</th>
-                    <th>Category</th>
-                    <th>Contact</th>
-                    <th>Image</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Fetch existing clubs from the database
-                $query = "SELECT id, name, category, contact_info, image FROM clubs";
-                $result = $conn->query($query);
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>
-                                <td>{$row['id']}</td>
-                                <td>{$row['name']}</td>
-                                <td>{$row['category']}</td>
-                                <td>{$row['contact_info']}</td>
-                                <td><img src='{$row['image']}' alt='Club Image'></td>
-                                <td>
-                                    <button onclick='editClub({$row['id']})'>Edit</button>
-                                    <button onclick='deleteClub({$row['id']})'>Delete</button>
-                                </td>
-                              </tr>";
+        <!-- Clubs Section -->
+        <section id="clubs">
+            <h2>Clubs Management</h2>
+            <button onclick="openModal()">+ Add New Club</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Club Name</th>
+                        <th>Category</th>
+                        <th>Contact</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Fetch existing clubs from the database
+                    $query = "SELECT id, name, category, contact_info, image FROM clubs";
+                    $result = $conn->query($query);
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>{$row['id']}</td>
+                                    <td>{$row['name']}</td>
+                                    <td>{$row['category']}</td>
+                                    <td>{$row['contact_info']}</td>
+                                    <td><img src='{$row['image']}' alt='Club Image'></td>
+                                    <td>
+                                        <button onclick='editClub({$row['id']})'>Edit</button>
+                                        <button onclick='deleteClub({$row['id']})'>Delete</button>
+                                    </td>
+                                  </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='6'>No clubs found.</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='6'>No clubs found.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+                    ?>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Memberships Section -->
+        <section id="memberships">
+            <h2>Memberships</h2>
+            <button onclick="exportMemberships()">Export as PDF</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Club ID</th>
+                        <th>Joined At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Fetch memberships from the database
+                    $query = "SELECT user_id, club_id, joined_at FROM memberships";
+                    $result = $conn->query($query);
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>{$row['user_id']}</td>
+                                    <td>{$row['club_id']}</td>
+                                    <td>{$row['joined_at']}</td>
+                                  </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='3'>No memberships found.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Charts Section -->
+        <section id="charts">
+            <h2>Membership Chart</h2>
+            <div class="chart-container">
+                <canvas id="membershipChart"></canvas>
+            </div>
+        </section>
     </main>
 
+    <!-- Modal for Adding/Editing Clubs -->
     <div id="clubModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
@@ -273,6 +329,68 @@ if (isset($_GET['delete_club'])) {
     </div>
 
     <script>
+        // Chart.js for Membership Chart
+        const ctx = document.getElementById('membershipChart').getContext('2d');
+        const membershipChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?php
+                    // Fetch club names for chart labels
+                    $query = "SELECT name FROM clubs";
+                    $result = $conn->query($query);
+                    $labels = [];
+                    while ($row = $result->fetch_assoc()) {
+                        $labels[] = $row['name'];
+                    }
+                    echo json_encode($labels);
+                ?>,
+                datasets: [{
+                    label: 'Number of Members',
+                    data: <?php
+                        // Fetch member counts for each club
+                        $query = "SELECT club_id, COUNT(*) as member_count FROM memberships GROUP BY club_id";
+                        $result = $conn->query($query);
+                        $data = [];
+                        while ($row = $result->fetch_assoc()) {
+                            $data[] = $row['member_count'];
+                        }
+                        echo json_encode($data);
+                    ?>,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Export Memberships as PDF
+        function exportMemberships() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Memberships Report", 10, 10);
+            doc.autoTable({
+                head: [['User ID', 'Club ID', 'Joined At']],
+                body: <?php
+                    $query = "SELECT user_id, club_id, joined_at FROM memberships";
+                    $result = $conn->query($query);
+                    $data = [];
+                    while ($row = $result->fetch_assoc()) {
+                        array_push($data, [$row['user_id'], $row['club_id'], $row['joined_at']]);
+                    }
+                    echo json_encode($data);
+                ?>
+            });
+            doc.save('memberships_report.pdf');
+        }
+
+        // Modal Functions
         function openModal() {
             document.getElementById("clubModal").style.display = "flex";
         }

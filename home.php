@@ -90,6 +90,7 @@ $clubs = $club->getClubs();
 
         /* Hero Section */
         .hero {
+            font-family: 'Copperplate', serif;
             position: relative;
             text-align: center;
             color: white;
@@ -124,11 +125,13 @@ $clubs = $club->getClubs();
 
         /* Upcoming Events Section */
         .events-section {
+            font-family: 'Copperplate', serif;
             padding: 40px 20px;
             background-color: #fff;
             text-align: center;
         }
         .events-section h2 {
+            font-family: 'Copperplate', serif;
             font-size: 2.5rem;
             margin-bottom: 20px;
             color: #007bff;
@@ -159,11 +162,13 @@ $clubs = $club->getClubs();
 
         /* Photo Gallery Section */
         .gallery-section {
+            font-family: 'Copperplate', serif;
             padding: 40px 20px;
             background-color: #f9f9f9;
             text-align: center;
         }
         .gallery-section h2 {
+            font-family: 'Copperplate', serif;
             font-size: 2.5rem;
             margin-bottom: 20px;
             color: #007bff;
@@ -197,16 +202,19 @@ $clubs = $club->getClubs();
             position: relative;
         }
         .alumni-section h2 {
+            font-family: 'Copperplate', serif;
             font-size: 2.5rem;
             margin-bottom: 20px;
             color: #007bff;
         }
         .alumni-section p {
+            font-family: 'Copperplate', serif;
             font-size: 1.2rem;
             color: #666;
             margin-bottom: 30px;
         }
         .alumni-section .alumni-link {
+            font-family: 'Copperplate', serif;
             display: inline-block;
             padding: 10px 20px;
             background-color: #007bff;
