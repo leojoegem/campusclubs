@@ -38,27 +38,23 @@ $clubs = $club->getClubs();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusClubs</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="/CampusClubs/styles.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
         /* Global Styles */
         body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f9f9f9;
             color: #333;
             line-height: 1.6;
         }
 
-        /* Navigation Bar */
+        /* Navigation Bar (Unchanged) */
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
             background-color: #333;
-            color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .navbar .logo {
@@ -90,7 +86,6 @@ $clubs = $club->getClubs();
 
         /* Hero Section */
         .hero {
-            font-family: 'Copperplate', serif;
             position: relative;
             text-align: center;
             color: white;
@@ -125,26 +120,16 @@ $clubs = $club->getClubs();
 
         /* Upcoming Events Section */
         .events-section {
-            font-family: 'Copperplate', serif;
-            padding: 40px 20px;
+            padding: 60px 20px;
             background-color: #fff;
-            text-align: center;
         }
         .events-section h2 {
-            font-family: 'Copperplate', serif;
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #007bff;
-        }
-        .events-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            text-align: center;
         }
         .event-banner {
-            flex: 1 1 calc(33.333% - 40px);
-            max-width: calc(33.333% - 40px);
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -157,27 +142,18 @@ $clubs = $club->getClubs();
         .event-banner img {
             width: 100%;
             height: auto;
-            display: block;
         }
 
         /* Photo Gallery Section */
         .gallery-section {
-            font-family: 'Copperplate', serif;
-            padding: 40px 20px;
+            padding: 60px 20px;
             background-color: #f9f9f9;
-            text-align: center;
         }
         .gallery-section h2 {
-            font-family: 'Copperplate', serif;
             font-size: 2.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #007bff;
-        }
-        .gallery-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            text-align: center;
         }
         .gallery-item {
             border-radius: 10px;
@@ -196,25 +172,21 @@ $clubs = $club->getClubs();
 
         /* Alumni Section */
         .alumni-section {
-            padding: 40px 20px;
+            padding: 60px 20px;
             background-color: #fff;
             text-align: center;
-            position: relative;
         }
         .alumni-section h2 {
-            font-family: 'Copperplate', serif;
             font-size: 2.5rem;
             margin-bottom: 20px;
             color: #007bff;
         }
         .alumni-section p {
-            font-family: 'Copperplate', serif;
             font-size: 1.2rem;
             color: #666;
             margin-bottom: 30px;
         }
         .alumni-section .alumni-link {
-            font-family: 'Copperplate', serif;
             display: inline-block;
             padding: 10px 20px;
             background-color: #007bff;
@@ -225,12 +197,6 @@ $clubs = $club->getClubs();
         }
         .alumni-section .alumni-link:hover {
             background-color: #0056b3;
-        }
-        .alumni-section .arrow {
-            font-size: 2rem;
-            color: #007bff;
-            margin-top: 10px;
-            cursor: pointer;
         }
 
         /* Footer */
@@ -249,14 +215,21 @@ $clubs = $club->getClubs();
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <div class="logo">CampusClubs</div>
-            <ul class="nav-links">
-                <li><a href="home.php">Home</a></li>
-                <li><a href="clubs.php">Clubs</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand logo" href="#">CampusClubs</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto nav-links">
+                        <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="clubs.php">Clubs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -270,58 +243,75 @@ $clubs = $club->getClubs();
 
     <!-- Upcoming Events Section -->
     <section class="events-section">
-        <h2>Upcoming Events</h2>
-        <div class="events-container">
-            <div class="event-banner">
-                <img src="images/events7.jpg" alt="Event 1">
-            </div>
-            <div class="event-banner">
-                <img src="images/events6.webp" alt="Event 2">
-            </div>
-            <div class="event-banner">
-                <img src="images/events5.jpg" alt="Event 3">
+        <div class="container">
+            <h2>Upcoming Events</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="event-banner">
+                        <img src="images/events7.jpg" alt="Event 1" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="event-banner">
+                        <img src="images/events6.webp" alt="Event 2" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="event-banner">
+                        <img src="images/events5.jpg" alt="Event 3" class="img-fluid">
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Photo Gallery Section -->
     <section class="gallery-section">
-        <h2>Photo Gallery</h2>
-        <div class="gallery-container">
-            <div class="gallery-item">
-                <img src="images/diversity2.jpg" alt="Gallery Image 1">
-            </div>
-            <div class="gallery-item">
-                <img src="images/diversity3.JPG" alt="Gallery Image 2">
-            </div>
-            <div class="gallery-item">
-                <img src="images/diversity4.png" alt="Gallery Image 3">
-            </div>
-            <div class="gallery-item">
-                <img src="images/diversity2.jpg" alt="Gallery Image 4">
+        <div class="container">
+            <h2>Photo Gallery</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="gallery-item">
+                        <img src="images/diversity2.jpg" alt="Gallery Image 1" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="gallery-item">
+                        <img src="images/diversity3.JPG" alt="Gallery Image 2" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="gallery-item">
+                        <img src="images/diversity4.png" alt="Gallery Image 3" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="gallery-item">
+                        <img src="images/diversity2.jpg" alt="Gallery Image 4" class="img-fluid">
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Alumni Section -->
     <section class="alumni-section">
-        <h2>Alumni</h2>
-        <p>Stay connected with our alumni network and explore their achievements.</p>
-        <a href="alumni.php" class="alumni-link">Visit Alumni Page</a>
-        <div class="arrow" onclick="window.location.href='alumni.php'">&#8594;</div>
+        <div class="container">
+            <h2>Alumni</h2>
+            <p>Stay connected with our alumni network and explore their achievements.</p>
+            <a href="alumni.php" class="alumni-link">Visit Alumni Page</a>
+        </div>
     </section>
 
-    <footer style="position: relative; text-align: center; padding: 20px; background-color: #007bff; color: white; margin-top: 40px;">
-    <p style="margin: 0;">&copy; 2023 CampusClubs</p>
-    <a href="dashboard.php" 
-       style="color: white; text-decoration: none; font-size: 1.2em; 
-              font-weight: bold; position: absolute; bottom: 10px; right: 20px; 
-              opacity: 0.6; transition: opacity 0.3s ease, transform 0.2s ease;">
-        D
-    </a>
-</footer>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 CampusClubs</p>
+        </div>
+    </footer>
 
-
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Hero Section Carousel
         let heroImages = [
@@ -342,15 +332,6 @@ $clubs = $club->getClubs();
             currentIndex = (currentIndex + 1) % heroImages.length;
         }
         setInterval(rotateHeroImages, 3000);
-
-        // Event Section Image Sizing
-        const eventBanners = document.querySelectorAll('.event-banner');
-        eventBanners.forEach(banner => {
-            const img = banner.querySelector('img');
-            img.onload = () => {
-                banner.style.height = `${img.clientHeight}px`;
-            };
-        });
     </script>
 </body>
 </html>

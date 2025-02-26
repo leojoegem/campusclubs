@@ -50,8 +50,11 @@ $clubs = $club->getClubs($search_term);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusClubs - Clubs</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Copperplate&family=Copperplate+Gothic+Light&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <!-- Custom CSS -->
     <style>
         /* Global Styles */
         body {
@@ -216,7 +219,7 @@ $clubs = $club->getClubs($search_term);
                 <li><a href="home.php">Home</a></li>
                 <li><a href="clubs.php">Clubs</a></li>
                 <li><a href="about.php">About</a></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -232,30 +235,37 @@ $clubs = $club->getClubs($search_term);
             </form>
         </div>
 
-        <?php
-        if ($clubs->num_rows > 0) {
-            while ($row = $clubs->fetch_assoc()) {
-                echo '<div class="club-card" onclick="window.location.href=\'clubdetails.php?club_id=' . $row['id'] . '\'">';
-                if (!empty($row['image'])) {
-                    echo '<img src="' . $row['image'] . '" alt="' . $row['name'] . '">';
+        <div class="row">
+            <?php
+            if ($clubs->num_rows > 0) {
+                while ($row = $clubs->fetch_assoc()) {
+                    echo '<div class="col-md-4 mb-4">';
+                    echo '<div class="club-card" onclick="window.location.href=\'clubdetails.php?club_id=' . $row['id'] . '\'">';
+                    if (!empty($row['image'])) {
+                        echo '<img src="' . $row['image'] . '" alt="' . $row['name'] . '" class="img-fluid">';
+                    }
+                    echo '<h2>' . $row['name'] . '</h2>';
+                    echo '<p class="description">' . $row['description'] . '</p>';
+                    echo '<p><b>Category:</b> ' . $row['category'] . '</p>';
+                    echo '<p><b>Contact:</b> ' . $row['contact_info'] . '</p>';
+                    echo '<p><b>Meeting Schedule:</b> ' . $row['meeting_schedule'] . '</p>';
+                    echo '<p><b>Location:</b> ' . $row['location'] . '</p>';
+                    echo '<a href="joinclubs.php?club_id=' . $row['id'] . '" class="join-button">Join Club</a>';
+                    echo '</div>';
+                    echo '</div>';
                 }
-                echo '<h2>' . $row['name'] . '</h2>';
-                echo '<p class="description">' . $row['description'] . '</p>';
-                echo '<p><b>Category:</b> ' . $row['category'] . '</p>';
-                echo '<p><b>Contact:</b> ' . $row['contact_info'] . '</p>';
-                echo '<p><b>Meeting Schedule:</b> ' . $row['meeting_schedule'] . '</p>';
-                echo '<p><b>Location:</b> ' . $row['location'] . '</p>';
-                echo '<a href="joinclubs.php?club_id=' . $row['id'] . '" class="join-button">Join Club</a>';
-                echo '</div>';
+            } else {
+                echo '<div class="col-12"><p>No clubs found.</p></div>';
             }
-        } else {
-            echo "<p>No clubs found.</p>";
-        }
-        ?>
+            ?>
+        </div>
     </section>
 
     <footer>
         <p>&copy; 2023 CampusClubs</p>
     </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

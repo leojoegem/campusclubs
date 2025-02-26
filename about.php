@@ -12,24 +12,6 @@ if (isset($_SESSION['user_role'])) {
         exit();
     }
 }
-
-// Club class
-class Club {
-    private $conn;
-
-    public function __construct($db) {
-        $this->conn = $db;
-    }
-
-    public function getClubs() {
-        $stmt = $this->conn->prepare("SELECT * FROM clubs");
-        $stmt->execute();
-        return $stmt->get_result();
-    }
-}
-
-$club = new Club($conn);
-$clubs = $club->getClubs();
 ?>
 
 <!DOCTYPE html>
@@ -37,15 +19,16 @@ $clubs = $club->getClubs();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusClubs</title>
+    <title>CampusClubs - About Us</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="/CampusClubs/styles.css" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
         /* Global Styles */
         body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f9f9f9;
             color: #333;
             line-height: 1.6;
@@ -53,12 +36,7 @@ $clubs = $club->getClubs();
 
         /* Navigation Bar (Unchanged) */
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
             background-color: #333;
-            color: white;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .navbar .logo {
@@ -93,7 +71,7 @@ $clubs = $club->getClubs();
             position: relative;
             text-align: center;
             color: white;
-            height: 500px;
+            height: 400px;
             background-size: cover;
             background-position: center;
             display: flex;
@@ -109,31 +87,23 @@ $clubs = $club->getClubs();
             top: 0;
             left: 0;
             z-index: -1;
-            transition: opacity 1s ease-in-out;
         }
         .hero h1 {
             font-size: 3.5rem;
             font-weight: 700;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-            margin: 0;
-            padding: 0 20px;
-        }
-        .hero p {
-            font-size: 1.5rem;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-            margin-top: 20px;
         }
 
         /* About Section */
         .about-section {
             padding: 60px 20px;
             background-color: #fff;
-            text-align: center;
         }
         .about-section h2 {
             font-size: 2.5rem;
             color: #007bff;
             margin-bottom: 20px;
+            text-align: center;
         }
         .about-section p {
             font-size: 1.1rem;
@@ -143,105 +113,88 @@ $clubs = $club->getClubs();
             line-height: 1.8;
         }
 
-        /* Club Section */
-        .club-section {
+        /* Mission & Vision Section */
+        .mission-vision-section {
             padding: 60px 20px;
             background-color: #f9f9f9;
         }
-        .club-section h2 {
-            text-align: center;
+        .mission-vision-section h2 {
             font-size: 2.5rem;
-            margin-bottom: 40px;
             color: #007bff;
+            margin-bottom: 40px;
+            text-align: center;
         }
-        .club-container {
+        .mission-vision-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             padding: 20px;
         }
-        .club-card {
+        .mission-vision-card {
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            padding: 20px;
+            text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .club-card:hover {
+        .mission-vision-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
-        .club-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .club-card .content {
-            padding: 20px;
-            text-align: center;
-        }
-        .club-card h3 {
+        .mission-vision-card h3 {
             font-size: 1.5rem;
             margin-bottom: 10px;
             color: #333;
         }
-        .club-card p {
+        .mission-vision-card p {
             font-size: 1rem;
             color: #666;
-            margin-bottom: 15px;
-        }
-        .club-card .club-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .club-card .club-link:hover {
-            background-color: #0056b3;
         }
 
-        /* Testimonials Section */
-        .testimonials-section {
+        /* Team Section */
+        .team-section {
             padding: 60px 20px;
             background-color: #fff;
-            text-align: center;
         }
-        .testimonials-section h2 {
+        .team-section h2 {
             font-size: 2.5rem;
             color: #007bff;
             margin-bottom: 40px;
+            text-align: center;
         }
-        .testimonials-container {
+        .team-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             padding: 20px;
         }
-        .testimonial-card {
+        .team-card {
             background: white;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .testimonial-card img {
-            width: 80px;
-            height: 80px;
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .team-card img {
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             margin-bottom: 15px;
         }
-        .testimonial-card h4 {
+        .team-card h4 {
             font-size: 1.2rem;
             margin-bottom: 10px;
             color: #333;
         }
-        .testimonial-card p {
+        .team-card p {
             font-size: 1rem;
             color: #666;
-            font-style: italic;
         }
 
         /* Footer (Unchanged) */
@@ -260,88 +213,96 @@ $clubs = $club->getClubs();
 </head>
 <body>
     <header>
-        <nav class="navbar">
-            <div class="logo">CampusClubs</div>
-            <ul class="nav-links">
-                <li><a href="home.php">Home</a></li>
-                <li><a href="clubs.php">Clubs</a></li>
-                <li><a href="about.php">About</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand logo" href="#">CampusClubs</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto nav-links">
+                        <li class="nav-item"><a class="nav-link" href="home.php">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="clubs.php">Clubs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
         </nav>
     </header>
 
     <!-- Hero Section -->
     <div class="hero">
-        <img id="heroImage" src="images/hero1.jpg" alt="Campus Life">
-        <div>
-            <h1>Discover Your Passion, Connect with Your Community</h1>
-            <p>Join a vibrant community of students and explore your interests.</p>
-        </div>
+        <img src="images/about-hero.jpg" alt="About Us">
+        <h1>About CampusClubs</h1>
     </div>
 
     <!-- About Section -->
     <section class="about-section">
-        <h2>About CampusClubs</h2>
-        <p>
-            CampusClubs is your gateway to a thriving campus life. Whether you're into sports, arts, technology, or community service, 
-            we have a club for you. Our platform connects students with like-minded peers, fostering creativity, collaboration, and growth.
-        </p>
-    </section>
-
-    <!-- Club Section -->
-    <section class="club-section">
-        <h2>Explore Clubs</h2>
-        <div class="club-container">
-            <?php while ($row = $clubs->fetch_assoc()): ?>
-                <div class="club-card">
-                    <img src="images/club_placeholder.jpg" alt="<?= htmlspecialchars($row['name']); ?>">
-                    <div class="content">
-                        <h3><?= htmlspecialchars($row['name']); ?></h3>
-                        <p><?= htmlspecialchars($row['description']); ?></p>
-                        <a href="club_details.php?id=<?= $row['id']; ?>" class="club-link">Learn More</a>
-                    </div>
-                </div>
-            <?php endwhile; ?>
+        <div class="container">
+            <h2>Who We Are</h2>
+            <p>
+                CampusClubs is a platform dedicated to connecting students with clubs and organizations that match their interests. 
+                Our mission is to foster a vibrant campus community where students can explore their passions, develop new skills, 
+                and build lifelong friendships.
+            </p>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials-section">
-        <h2>What Our Members Say</h2>
-        <div class="testimonials-container">
-            <div class="testimonial-card">
-                <img src="images/testimonial1.jpg" alt="John Doe">
-                <h4>John Doe</h4>
-                <p>"CampusClubs helped me find my passion for photography. I've made lifelong friends and learned so much!"</p>
+    <!-- Mission & Vision Section -->
+    <section class="mission-vision-section">
+        <div class="container">
+            <h2>Our Mission & Vision</h2>
+            <div class="mission-vision-container">
+                <div class="mission-vision-card">
+                    <h3>Mission</h3>
+                    <p>
+                        To provide a platform that empowers students to discover, join, and create clubs that align with their interests, 
+                        fostering personal growth and community engagement.
+                    </p>
+                </div>
+                <div class="mission-vision-card">
+                    <h3>Vision</h3>
+                    <p>
+                        To create a campus environment where every student feels connected, inspired, and supported in pursuing their passions.
+                    </p>
+                </div>
             </div>
-            <div class="testimonial-card">
-                <img src="images/testimonial2.jpg" alt="Jane Smith">
-                <h4>Jane Smith</h4>
-                <p>"Joining the debate club through CampusClubs has been a game-changer for my confidence and skills."</p>
-            </div>
-            <div class="testimonial-card">
-                <img src="images/diversity.jpg" alt="Alex Johnson">
-                <h4>Alex Johnson</h4>
-                <p>"I love how easy it is to discover and join clubs that match my interests. Highly recommend!"</p>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <h2>Meet Our Team</h2>
+            <div class="team-container">
+                <div class="team-card">
+                    <img src="images/diversity5.avif" alt="John Doe">
+                    <h4>Josalah</h4>
+                    <p>Founder & CEO</p>
+                </div>
+                <div class="team-card">
+                    <img src="images/diversity6.webp" alt="Jane Smith">
+                    <h4>Harry Kane</h4>
+                    <p>Head of Operations</p>
+                </div>
+                <div class="team-card">
+                    <img src="images/diversity3.JPG" alt="Alex Johnson">
+                    <h4>Jamal Musiala</h4>
+                    <p>Community Manager</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 CampusClubs</p>
+        <div class="container">
+            <p>&copy; 2025 CampusClubs</p>
+        </div>
     </footer>
 
-    <script>
-        // Hero Image Rotation
-        let images = ["images/diversity.jpg", "images/hero2.jpg", "images/hero3.jpg"];
-        let currentIndex = 0;
-        function rotateImages() {
-            document.getElementById("heroImage").src = images[currentIndex];
-            currentIndex = (currentIndex + 1) % images.length;
-        }
-        setInterval(rotateImages, 3000);
-    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
