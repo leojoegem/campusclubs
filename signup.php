@@ -1,16 +1,12 @@
 <?php
 session_start();
-include 'dbConnect.php'; // Database connection
+include 'dbConnect.php';
 
 // Include PHPMailer classes
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Include PHPMailer autoloader
 require 'vendor/autoload.php';
-
-// Include User class
 include_once 'User.php';
 
 $error_message = "";
@@ -22,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $confirm_password = $_POST['confirm_password'];
     $user_role = $_POST['user_role'];
 
-    // Validation checks
+    // Validation
     if (empty($username) || empty($email) || empty($password) || empty($confirm_password) || empty($user_role)) {
         $error_message = "All fields are required.";
     } elseif ($password !== $confirm_password) {
@@ -55,14 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $mail->isSMTP();
                         $mail->Host = 'smtp.gmail.com';
                         $mail->SMTPAuth = true;
-                        $mail->Username = 'leojoegem@gmail.com'; // Your Gmail email
-                        $mail->Password = 'bydk jari tiah qbyx'; // Your Gmail app password
+                        $mail->Username = 'your-email@gmail.com'; // Your Gmail email
+                        $mail->Password = 'your-app-password'; // Your Gmail app password
                         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                         $mail->Port = 587;
 
-                        $mail->setFrom('leojoegem@gmail.com', 'CampusClubs');
+                        $mail->setFrom('your-email@gmail.com', 'CampusClubs');
                         $mail->addAddress($email, $username);
-
                         $mail->isHTML(true);
                         $mail->Subject = 'Your OTP for CampusClubs Registration';
                         $mail->Body = "<p>Your OTP code is: <b>$otp</b></p>";
@@ -70,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         if ($mail->send()) {
                             $_SESSION['email'] = $email; // Store email in session
                             header('Location: otp_verification.php');
-                            exit(); // Ensure redirection
+                            exit();
                         } else {
                             $error_message = "Failed to send OTP email. Please try again.";
                         }
@@ -88,116 +83,135 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusClubs - Sign Up</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;999&display=swap" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-icons.css" rel="stylesheet">
-    <link href="css/tooplate-little-fashion.css" rel="stylesheet">
 
     <style>
-        body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #f0f0f5;
         }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
         .signup-container {
-            max-width: 420px;
-            margin: 50px auto;
-            padding: 30px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .signup-container h2 {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             text-align: center;
-            margin-bottom: 20px;
-            font-weight: 700;
-            color: #333;
+            color: #fff;
         }
+
+        .signup-container h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
         .form-group {
             margin-bottom: 20px;
+            text-align: left;
         }
+
         .form-control {
-            border-radius: 5px;
+            width: 100%;
             padding: 12px;
-            font-size: 14px;
-            border: 1px solid #ddd;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
         }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        select.form-control {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
         .btn-custom {
             width: 100%;
             padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
             background-color: #0069d9;
             border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.3s ease-in-out;
         }
+
         .btn-custom:hover {
-            background-color: #0056b3;
+            background: #0056b3;
         }
+
+        .error-message {
+            color: #ff4d4d;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
         .footer {
-            text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 14px;
         }
+
         .footer a {
-            text-decoration: none;
-            color: #0069d9;
+            color: #fff;
             font-weight: 500;
+            text-decoration: none;
         }
+
         .footer a:hover {
-            color: #0056b3;
-        }
-        .error-message {
-            color: red;
-            text-align: center;
-            font-weight: bold;
+            text-decoration: underline;
         }
     </style>
 </head>
-
 <body>
 
     <div class="signup-container">
-        <h2>Create an Account on <span style="color: #0069d9;">CampusClubs</span></h2>
+        <h2>Create an Account on <span style="color: #f1f1f1;">CampusClubs</span></h2>
 
-        <?php if (!empty($error_message)):?>
-            <div class="error-message"><?php echo $error_message;?></div>
-        <?php endif;?>
+        <?php if (!empty($error_message)): ?>
+            <div class="error-message"><?php echo $error_message; ?></div>
+        <?php endif; ?>
 
         <form action="" method="POST">
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                <input type="text" class="form-control" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" class="form-control" name="email" placeholder="Email Address" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
             <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
             </div>
             <div class="form-group">
-                <label for="user_role">Select User Type</label>
-                <select class="form-control" id="user_role" name="user_role" required>
+                <select class="form-control" name="user_role" required>
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
                 </select>
@@ -212,5 +226,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

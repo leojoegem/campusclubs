@@ -255,7 +255,7 @@ $clubs = $club->getClubs();
                 <li><a href="home.php">Home</a></li>
                 <li><a href="clubs.php">Clubs</a></li>
                 <li><a href="about.php">About</a></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
     </header>

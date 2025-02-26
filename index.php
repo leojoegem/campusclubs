@@ -1,172 +1,166 @@
 <?php
-// Start session for user login tracking
 session_start();
-
-// Include your database connection file
-include('dbConnect.php'); // Assuming dbConnect.php connects to the database
+include('dbConnect.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get email, password, and role from the form
     $email = $_POST['email'];
     $password = $_POST['password'];
     $role = $_POST['role'];
 
-    // Query to fetch user data based on email
     $query = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($query); // Prepare the statement
-    $stmt->bind_param("s", $email); // Bind the email to the query
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-    $user = $result->fetch_assoc(); // Fetch the user record
-    
-    // Check if user exists
-    if ($user) {
-        // Verify the password
-        if (password_verify($password, $user['password'])) {
-            // Check if the role matches
-            if ($role === $user['role']) {
-                // Successful login, set session variables
-                $_SESSION['logged_in'] = true;
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['email'] = $email;
-                $_SESSION['role'] = $role;
-                $_SESSION['is_admin'] = ($role === 'admin');
-                
-                // Redirect based on role
-                if ($role === 'admin') {
-                    header('Location: dashboard.php');
-                } else {
-                    header('Location: home.php');
-                }
-                exit;
-            } else {
-                $error_message = "Invalid role. Please select the correct role.";
-            }
+    $user = $result->fetch_assoc();
+
+    if ($user && password_verify($password, $user['password'])) {
+        if ($role === $user['role']) {
+            $_SESSION['logged_in'] = true;
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email'] = $email;
+            $_SESSION['role'] = $role;
+            $_SESSION['is_admin'] = ($role === 'admin');
+
+            header('Location: ' . ($role === 'admin' ? 'dashboard.php' : 'home.php'));
+            exit;
         } else {
-            $error_message = "Invalid password. Please try again.";
+            $error_message = "Invalid role selected.";
         }
     } else {
-        $error_message = "No user found with that email. Please check your email.";
+        $error_message = "Invalid email or password.";
     }
 }
 ?>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusClubs - Login</title>
-
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-icons.css" rel="stylesheet">
-    <link href="css/tooplate-little-fashion.css" rel="stylesheet">
-    
     <style>
-        body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            background-color: #f0f0f5;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
         }
 
         .login-container {
-            max-width: 420px;
-            margin: 50px auto;
-            padding: 30px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            color: #fff;
         }
 
         .login-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
             font-weight: 700;
-            color: #333;
+            margin-bottom: 20px;
         }
 
         .form-group {
             margin-bottom: 20px;
+            text-align: left;
         }
 
         .form-control {
-            border-radius: 5px;
+            width: 100%;
             padding: 12px;
-            font-size: 14px;
-            border: 1px solid #ddd;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        select.form-control {
+            appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
         }
 
         .btn-custom {
             width: 100%;
             padding: 12px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
             background-color: #0069d9;
             border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.3s ease-in-out;
         }
 
         .btn-custom:hover {
-            background-color: #0056b3;
+            background: #0056b3;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         .footer {
-            text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 14px;
         }
 
         .footer a {
-            text-decoration: none;
-            color: #0069d9;
+            color: #fff;
             font-weight: 500;
+            text-decoration: none;
         }
 
         .footer a:hover {
-            color: #0056b3;
-        }
-
-        .error-message {
-            color: red;
-            text-align: center;
-            font-weight: bold;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Welcome Back to <span style="color: #0069d9;">CampusClubs</span></h2>
+        <h2>Welcome to <span style="color: #f1f1f1;">CampusClubs</span></h2>
 
         <?php if (isset($error_message)) { echo "<div class='error-message'>$error_message</div>"; } ?>
 
         <form action="" method="POST">
             <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                <input type="email" class="form-control" name="email" placeholder="Email Address" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <input type="password" class="form-control" name="password" placeholder="Password" required>
             </div>
             <div class="form-group">
-                <label for="role">Select Role</label>
-                <select class="form-control" id="role" name="role" required>
+                <select class="form-control" name="role" required>
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
                 </select>
             </div>
-            <div class="d-flex justify-content-between mb-3">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">Remember me</label>
-                </div>
-                <a href="#" class="text-primary">Forgot password?</a>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="submit" class="btn-custom">Login</button>
         </form>
-        <div class="text-center mt-3">
+
+        <div class="footer">
+            <p>Forgot password? <a href="#">Reset here</a></p>
             <p>Don't have an account? <a href="signup.php">Sign up</a></p>
         </div>
     </div>
