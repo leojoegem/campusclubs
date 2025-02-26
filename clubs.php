@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (isset($_SESSION['message'])) {
+    echo "<script>alert('" . addslashes($_SESSION['message']) . "');</script>";
+    unset($_SESSION['message']); // Clear the message after displaying
+}
 include 'dbConnect.php'; // Include your database connection
 
 // Optional: Add a search/filter feature
@@ -241,7 +245,7 @@ $clubs = $club->getClubs($search_term);
                 echo '<p><b>Contact:</b> ' . $row['contact_info'] . '</p>';
                 echo '<p><b>Meeting Schedule:</b> ' . $row['meeting_schedule'] . '</p>';
                 echo '<p><b>Location:</b> ' . $row['location'] . '</p>';
-                echo '<a href="join_club.php?club_id=' . $row['id'] . '" class="join-button">Join Club</a>';
+                echo '<a href="joinclubs.php?club_id=' . $row['id'] . '" class="join-button">Join Club</a>';
                 echo '</div>';
             }
         } else {
