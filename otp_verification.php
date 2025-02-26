@@ -4,14 +4,14 @@ include 'dbConnect.php';
 
 // Check if the user has an email session (registered but unverified)
 if (!isset($_SESSION['email'])) {
-    header("Location: login.php");
+    header("Location: home.php");
     exit();
 }
 
 $email = $_SESSION['email'];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user_otp = $_POST['otp'];
+    $user_otp = implode("", $_POST['otp']); // Combine the OTP digits into a single string
 
     // Fetch stored OTP from the database
     $stmt = $conn->prepare("SELECT id, otp, otp_expiry FROM users WHERE email = ?");
@@ -30,11 +30,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("s", $email);
             $stmt->execute();
 
-            unset($_SESSION['email']);
-            $_SESSION['user_id'] = $user_data['id'];
+            // Debugging: Check if the update was successful
+            if ($stmt->affected_rows > 0) {
+                unset($_SESSION['email']);
+                $_SESSION['user_id'] = $user_data['id'];
 
-            header("Location: login.php");
-            exit();
+                // Debugging: Print a message before redirecting
+                echo "OTP verified successfully. Redirecting to home...";
+                header("Location: home.php");
+                exit();
+            } else {
+                $error_message = "Failed to update user verification status.";
+            }
         } else {
             $error_message = "OTP has expired or is incorrect. Please try again.";
         }
@@ -168,7 +175,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form action="" method="POST">
             <div class="otp-box">
-                <input type="number" name="otp" maxlength="6" required>
+                <input type="number" name="otp[]" maxlength="1" required>
+                <input type="number" name="otp[]" maxlength="1" required>
+                <input type="number" name="otp[]" maxlength="1" required>
+                <input type="number" name="otp[]" maxlength="1" required>
+                <input type="number" name="otp[]" maxlength="1" required>
+                <input type="number" name="otp[]" maxlength="1" required>
             </div>
             <button type="submit" class="btn-custom">Verify</button>
         </form>
