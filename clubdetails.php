@@ -17,23 +17,29 @@ class Club {
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
+
+    public function getMemberCount($club_id) {
+        $sql = "SELECT COUNT(*) as member_count FROM memberships WHERE club_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $club_id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        return $result['member_count'];
+    }
 }
 
 $club_id = isset($_GET['club_id']) ? $_GET['club_id'] : null;
 $club = new Club($conn);
 $club_details = $club->getClubById($club_id);
+$club_details = $club->getClubById($club_id);
 
 if (!$club_details) {
     header("Location: clubs.php");
-    exit();
+$club_id = $_GET['club_id'] ?? null;
+
+    $member_count = $club->getMemberCount($club_id);
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusClubs - Club Details</title>
     <link href="https://fonts.googleapis.com/css2?family=Copperplate&family=Copperplate+Gothic+Light&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
@@ -96,65 +102,74 @@ if (!$club_details) {
         }
 
         /* Club Details */
-        .club-details {
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .club-details img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .club-details h2 {
-            font-family: 'Copperplate', serif;
-            font-size: 2.5rem;
-            margin: 0 0 10px;
-            color: #007bff;
-        }
-        .club-details p {
-            margin: 5px 0;
-            color: #555;
-            font-size: 1rem;
-        }
-        .club-details .description {
-            margin: 10px 0;
-            color: #666;
-            line-height: 1.6;
-        }
-        .club-details .join-button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            margin-top: 10px;
-            font-family: 'Copperplate Gothic Light', sans-serif;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        .club-details .join-button:hover {
-            background-color: #218838;
-        }
+        
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #333;
-            color: white;
-            margin-top: auto;
-        }
-        footer p {
-            margin: 0;
-            font-size: 1rem;
-        }
+.club-details {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.club-details img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.club-details h2 {
+    font-family: 'Copperplate', serif;
+    font-size: 2.5rem;
+    margin: 0 0 10px;
+    color: #007bff;
+}
+
+.club-details p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 1rem;
+}
+
+.club-details .description {
+    margin: 10px 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.club-details .join-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 10px;
+    font-family: 'Copperplate Gothic Light', sans-serif;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.club-details .join-button:hover {
+    background-color: #218838;
+}
+
+/* Additional Styling for Better Space Utilization */
+.section {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
     </style>
 </head>
 <body>
@@ -181,7 +196,8 @@ if (!$club_details) {
             <p><b>Contact:</b> <?php echo $club_details['contact_info']; ?></p>
             <p><b>Meeting Schedule:</b> <?php echo $club_details['meeting_schedule']; ?></p>
             <p><b>Location:</b> <?php echo $club_details['location']; ?></p>
-            <a href="join_club.php?club_id=<?php echo $club_details['id']; ?>" class="join-button">Join Club</a>
+            <p><b>Members:</b> <?php echo $member_count; ?></p>
+            <a href="joinclub.php?club_id=<?php echo $club_details['id']; ?>" class="join-button">Join Club</a>
         </div>
     </section>
 
