@@ -62,11 +62,13 @@ $clubs = $club->getClubs();
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .navbar .logo {
+            font-family: 'Copperplate', serif;
             font-size: 24px;
             font-weight: bold;
             color: #fff;
         }
         .navbar .nav-links {
+            font-family: 'Copperplate', serif;
             list-style: none;
             display: flex;
             gap: 20px;

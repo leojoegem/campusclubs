@@ -2,29 +2,12 @@
 session_start();
 include 'dbConnect.php'; // Include your database connection
 
-// Optional: Add a search/filter feature
-$search_term = isset($_GET['search']) ? $_GET['search'] : '';
-
 // Club class using OOP
 class Club {
     private $conn;
 
     public function __construct($db) {
         $this->conn = $db;
-    }
-
-    public function getClubs($search_term = '') {
-        $sql = "SELECT * FROM clubs";
-        if (!empty($search_term)) {
-            $sql .= " WHERE name LIKE ? OR description LIKE ?";
-        }
-        $stmt = $this->conn->prepare($sql);
-        if (!empty($search_term)) {
-            $search_term = "%$search_term%";
-            $stmt->bind_param("ss", $search_term, $search_term);
-        }
-        $stmt->execute();
-        return $stmt->get_result();
     }
 
     public function getClubById($club_id) {
@@ -36,8 +19,14 @@ class Club {
     }
 }
 
+$club_id = isset($_GET['club_id']) ? $_GET['club_id'] : null;
 $club = new Club($conn);
-$clubs = $club->getClubs($search_term);
+$club_details = $club->getClubById($club_id);
+
+if (!$club_details) {
+    header("Location: clubs.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +34,7 @@ $clubs = $club->getClubs($search_term);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusClubs - Clubs</title>
+    <title>CampusClubs - Club Details</title>
     <link href="https://fonts.googleapis.com/css2?family=Copperplate&family=Copperplate+Gothic+Light&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -106,73 +95,37 @@ $clubs = $club->getClubs($search_term);
             flex: 1;
         }
 
-        /* Search Bar */
-        .search-container {
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        .search-container input[type="text"] {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            width: 400px;
-            max-width: 100%;
-            font-family: 'Copperplate Gothic Light', sans-serif;
-            font-size: 16px;
-        }
-        .search-container button {
-            padding: 12px 24px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Copperplate Gothic Light', sans-serif;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        .search-container button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Club Cards */
-        .club-card {
+        /* Club Details */
+        .club-details {
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
         }
-        .club-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .club-card img {
+        .club-details img {
             max-width: 100%;
             height: auto;
             border-radius: 10px;
             margin-bottom: 20px;
         }
-        .club-card h2 {
+        .club-details h2 {
             font-family: 'Copperplate', serif;
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin: 0 0 10px;
             color: #007bff;
         }
-        .club-card p {
+        .club-details p {
             margin: 5px 0;
             color: #555;
             font-size: 1rem;
         }
-        .club-card .description {
+        .club-details .description {
             margin: 10px 0;
             color: #666;
             line-height: 1.6;
         }
-        .club-card .join-button {
+        .club-details .join-button {
             display: inline-block;
             padding: 10px 20px;
             background-color: #28a745;
@@ -186,7 +139,7 @@ $clubs = $club->getClubs($search_term);
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
-        .club-card .join-button:hover {
+        .club-details .join-button:hover {
             background-color: #218838;
         }
 
@@ -217,37 +170,19 @@ $clubs = $club->getClubs($search_term);
         </nav>
     </header>
 
-    <section id="clubs" class="section">
-        <h2>Explore Clubs</h2>
-
-        <!-- Search Bar -->
-        <div class="search-container">
-            <form method="get" action="">
-                <input type="text" name="search" placeholder="Search clubs..." value="<?php echo $search_term; ?>">
-                <button type="submit">Search</button>
-            </form>
+    <section id="club-details" class="section">
+        <div class="club-details">
+            <?php if (!empty($club_details['image'])): ?>
+                <img src="<?php echo $club_details['image']; ?>" alt="<?php echo $club_details['name']; ?>">
+            <?php endif; ?>
+            <h2><?php echo $club_details['name']; ?></h2>
+            <p class="description"><?php echo $club_details['description']; ?></p>
+            <p><b>Category:</b> <?php echo $club_details['category']; ?></p>
+            <p><b>Contact:</b> <?php echo $club_details['contact_info']; ?></p>
+            <p><b>Meeting Schedule:</b> <?php echo $club_details['meeting_schedule']; ?></p>
+            <p><b>Location:</b> <?php echo $club_details['location']; ?></p>
+            <a href="join_club.php?club_id=<?php echo $club_details['id']; ?>" class="join-button">Join Club</a>
         </div>
-
-        <?php
-        if ($clubs->num_rows > 0) {
-            while ($row = $clubs->fetch_assoc()) {
-                echo '<div class="club-card" onclick="window.location.href=\'clubdetails.php?club_id=' . $row['id'] . '\'">';
-                if (!empty($row['image'])) {
-                    echo '<img src="' . $row['image'] . '" alt="' . $row['name'] . '">';
-                }
-                echo '<h2>' . $row['name'] . '</h2>';
-                echo '<p class="description">' . $row['description'] . '</p>';
-                echo '<p><b>Category:</b> ' . $row['category'] . '</p>';
-                echo '<p><b>Contact:</b> ' . $row['contact_info'] . '</p>';
-                echo '<p><b>Meeting Schedule:</b> ' . $row['meeting_schedule'] . '</p>';
-                echo '<p><b>Location:</b> ' . $row['location'] . '</p>';
-                echo '<a href="join_club.php?club_id=' . $row['id'] . '" class="join-button">Join Club</a>';
-                echo '</div>';
-            }
-        } else {
-            echo "<p>No clubs found.</p>";
-        }
-        ?>
     </section>
 
     <footer>

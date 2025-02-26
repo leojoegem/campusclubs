@@ -13,7 +13,7 @@ if (isset($_SESSION['user_role'])) {
     }
 }
 
-// Club class using OOP
+// Club class
 class Club {
     private $conn;
 
@@ -62,11 +62,13 @@ $clubs = $club->getClubs();
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .navbar .logo {
+            font-family: 'Copperplate', serif;
             font-size: 24px;
             font-weight: bold;
             color: #fff;
         }
         .navbar .nav-links {
+            font-family: 'Copperplate', serif;
             list-style: none;
             display: flex;
             gap: 20px;
@@ -196,7 +198,7 @@ $clubs = $club->getClubs();
     </header>
 
     <div class="hero">
-        <img id="heroImage" src="placeholder1.jpg" alt="Club Image">
+        <img id="heroImage" src="images/diversity2.jpg" alt="Club Image">
         <h1>Discover Your Passion, Connect with Your Community</h1>
     </div>
 
@@ -218,7 +220,7 @@ $clubs = $club->getClubs();
     </footer>
 
     <script>
-        let images = ["placeholder1.jpg", "placeholder2.jpg", "placeholder3.jpg"];
+        let images = ["images/diversity2.jpg", "placeholder2.jpg", "placeholder3.jpg"];
         let currentIndex = 0;
         function rotateImages() {
             document.getElementById("heroImage").src = images[currentIndex];
